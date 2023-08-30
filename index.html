@@ -11,10 +11,18 @@
 </head>
 
 <body>
-  <h1>Hello World!</h1>
-  We are using Node.js <span id="node-version"></span>, Chromium
-  <span id="chrome-version"></span>, and Electron
-  <span id="electron-version"></span>.
+  <div class="container mt-4">
+
+    <!-- <h1>Hello World!</h1> -->
+    <form id="document-upload">
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Upload documents</label>
+        <input class="form-control" type="file" id="formFile">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
 
   <!-- You can also require other files to run in this process -->
   <script src="./dist/renderer.js"></script>

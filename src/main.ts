@@ -1,5 +1,24 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
+import { PythonShell } from 'python-shell';
+import * as fs from "fs";
+
+// Define the file path in /tmp directory
+const filePath = path.join('/tmp', 'electronpython-err.log');
+
+async function handleRunPythonCode(): Promise<void> {
+  const options = { args: ['bla bla bla'] };
+  const scriptPath = path.join(process.resourcesPath, 'script.py');
+  fs.writeFileSync(filePath, process.resourcesPath);
+
+  PythonShell.run(scriptPath, options).then((messages: [string]) => {
+    console.log(messages);
+    // Do something with messages here
+  }).catch((err: any) => {
+    // TODO error handling
+    fs.writeFileSync(filePath, err.toString());
+  });
+}
 
 function createWindow() {
   // Create the browser window.
@@ -22,6 +41,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  ipcMain.handle('run-python-code', handleRunPythonCode);
   createWindow();
 
   app.on("activate", function () {
