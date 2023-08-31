@@ -8,7 +8,6 @@ import { flow } from "lodash";
 // needed in the renderer process.
 
 const runPythonButton = document.getElementById('python');
-const numberDisplayButton = document.getElementById('numberDisplay');
 
 interface ContextBridge {
   electronAPI: {

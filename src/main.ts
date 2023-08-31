@@ -4,19 +4,18 @@ import { PythonShell } from 'python-shell';
 import * as fs from "fs";
 
 // Define the file path in /tmp directory
-const filePath = path.join('/tmp', 'electronpython-err.log');
+const logPath = path.join('/tmp', 'electronpython-err.log');
+const scriptPath = path.join(process.resourcesPath, 'script.py');
 
 async function handleRunPythonCode(): Promise<void> {
   const options = { args: ['bla bla bla'] };
-  const scriptPath = path.join(process.resourcesPath, 'script.py');
-  fs.writeFileSync(filePath, process.resourcesPath);
 
   PythonShell.run(scriptPath, options).then((messages: [string]) => {
     console.log(messages);
     // Do something with messages here
   }).catch((err: any) => {
     // TODO error handling
-    fs.writeFileSync(filePath, err.toString());
+    fs.writeFileSync(logPath, err.toString());
   });
 }
 
