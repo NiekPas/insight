@@ -1,30 +1,27 @@
 import os, sys
+from collections import Counter
+import json
 
-print("hello here's a message from another universe!")
-print("This is the args you sent me:")
-print(sys.argv)
+def word_frequencies(text: str) -> str:
+    words = text.split()
+    word_freq = Counter(words)
+
+    # Convert Counter to a dictionary for JSON
+    word_freq_dict = dict(word_freq)
+    return json.dumps(word_freq_dict, indent=4)
 
 document_path = sys.argv[1]
 
-# TODO get file from document path, convert to some usable format, analyze, send back
+# For now, assume the file is a plain text file. Converting pdfs/word docs is a TODO.
+try:
+    with open(document_path, 'r') as file:
+        text = file.read()
 
-# import sys,json
-# data = sys.stdin.readlines()
-# data = json.loads(data[0])
-# print(data[0]+10)
-# sys.stdout.flush()
+        # TODO text preprocessing
+        json_data = word_frequencies(text)
 
-# from collections import Counter
+        # Send back to TS
+        print(json_data)
 
-# # Sample text (replace with your text)
-# text = "This is a sample text. You can replace it with your own text."
-
-# # Tokenize the text into words
-# words = text.split()
-
-# # Use Counter to count word frequencies
-# word_freq = Counter(words)
-
-# # Print the word frequencies
-# for word, freq in word_freq.items():
-#     print(f"{word}: {freq}")
+except FileNotFoundError:
+    print("The file was not found.")
