@@ -10,7 +10,12 @@ def word_frequencies(text: str) -> str:
     word_freq_dict = dict(word_freq)
     return json.dumps(word_freq_dict, indent=4)
 
-document_path = sys.argv[1]
+try:
+    document_path = sys.argv[1]
+except IndexError:
+    print("No document path provided.")
+    sys.exit(1)
+
 
 # For now, assume the file is a plain text file. Converting pdfs/word docs is a TODO.
 try:
