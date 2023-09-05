@@ -25,3 +25,4 @@ try:
 
 except FileNotFoundError:
     print("The file was not found.")
+    sys.exit(1)
