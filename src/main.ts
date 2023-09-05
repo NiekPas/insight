@@ -24,7 +24,9 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   ipcMain.handle('run-python-code', (e: IpcMainInvokeEvent, ...args: string[]) => {
-    handleRunPythonCode(args[0]).then(resp => console.log(resp));
+    handleRunPythonCode(args[0])
+      .then(resp => console.log(resp))
+      .catch((err: any) => console.log("Exited with code: " + err));
   });
   createWindow();
 
