@@ -18,10 +18,10 @@ document.getElementById("document-upload").addEventListener("submit", (e) => {
   console.log("form submitted");
 
   // TODO handle promise rejections (e.g. the user not having selected a file) by showing an error to the user
-  handleEvent(e);
+  handleFormSubmit(e);
 });
 
-function handleEvent(e: SubmitEvent): Promise<any> {
+function handleFormSubmit(e: SubmitEvent): Promise<any> {
   const file = (document.getElementById('formFile') as HTMLInputElement).files[0];
 
   if (!file) {
