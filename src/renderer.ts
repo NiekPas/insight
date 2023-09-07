@@ -13,7 +13,6 @@ interface ContextBridge {
 
 document.getElementById("document-upload").addEventListener("submit", (e) => {
   e.preventDefault();
-  console.log("form submitted");
 
   // TODO handle promise rejections (e.g. the user not having selected a file) by showing an error to the user
   handleFormSubmit(e);
@@ -26,7 +25,6 @@ function handleFormSubmit(e: SubmitEvent): Promise<any> {
     return Promise.reject(new Error('Please select a file before submitting.'));
   }
 
-  console.log("Before analyze");
   const analyze: (file: File) => Promise<[string]> =
     (file) => (window as unknown as ContextBridge).electronAPI.runPythonCode(file.path);
 
