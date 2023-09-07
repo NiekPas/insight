@@ -4,19 +4,16 @@ import { handleRunPythonCode } from "./python-bridge";
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-    },
-    width: 800,
-  });
+  const options = windowOptionsForEnvironment(process.env.NODE_ENV);
+  const mainWindow = new BrowserWindow(options);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
+  }
 }
 
 // This method will be called when Electron has finished
@@ -45,6 +42,26 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+function windowOptionsForEnvironment(node_env: string): Electron.BrowserWindowConstructorOptions {
+  if (node_env = 'development') {
+    return {
+      height: 600,
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+      },
+      // Extra wide for devtools
+      width: 1200,
+    };
+  }
+  return {
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+    width: 800,
+  };
+}
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

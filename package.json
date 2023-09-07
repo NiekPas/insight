@@ -5,7 +5,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "npm run build && NODE_ENV=development electron ./dist/main.js"
   },
   "keywords": [
     "Electron",
