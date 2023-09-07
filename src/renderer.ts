@@ -5,9 +5,11 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
+import WordFrequencies from "./types/WordFrequencies";
+
 interface ContextBridge {
   electronAPI: {
-    runPythonCode: (path: string) => Promise<[string]>;
+    runPythonCode: (path: string) => Promise<WordFrequencies>;
   };
 };
 
@@ -18,14 +20,14 @@ document.getElementById("document-upload").addEventListener("submit", (e) => {
   handleFormSubmit(e);
 });
 
-function handleFormSubmit(e: SubmitEvent): Promise<any> {
+function handleFormSubmit(e: SubmitEvent): Promise<WordFrequencies> {
   const file = (document.getElementById('formFile') as HTMLInputElement).files[0];
 
   if (!file) {
     return Promise.reject(new Error('Please select a file before submitting.'));
   }
 
-  const analyze: (file: File) => Promise<[string]> =
+  const analyze: (file: File) => Promise<WordFrequencies> =
     (file) => (window as unknown as ContextBridge).electronAPI.runPythonCode(file.path);
 
   analyze(file).then(resp => {
