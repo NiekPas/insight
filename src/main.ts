@@ -46,7 +46,7 @@ app.on("window-all-closed", () => {
 function windowOptionsForEnvironment(node_env: string): Electron.BrowserWindowConstructorOptions {
   if (node_env = 'development') {
     return {
-      height: 600,
+      height: 800,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
       },
