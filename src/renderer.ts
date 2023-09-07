@@ -17,6 +17,7 @@ document.getElementById("document-upload").addEventListener("submit", (e) => {
   e.preventDefault();
   console.log("form submitted");
 
+  // TODO handle promise rejections (e.g. the user not having selected a file) by showing an error to the user
   handleEvent(e);
 });
 
