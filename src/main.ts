@@ -20,11 +20,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  ipcMain.handle('run-python-code', (e: IpcMainInvokeEvent, ...args: string[]) => {
-    handleRunPythonCode(args[0])
-      .then(resp => console.log(resp))
-      .catch((err: any) => console.log("Exited with code: " + err));
-  });
+  ipcMain.handle('run-python-code', (e: IpcMainInvokeEvent, ...args: string[]) => handleRunPythonCode(args[0]));
   createWindow();
 
   app.on("activate", function () {

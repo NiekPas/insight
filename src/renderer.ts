@@ -28,7 +28,14 @@ function handleFormSubmit(e: SubmitEvent): Promise<any> {
   const analyze: (file: File) => Promise<[string]> =
     (file) => (window as unknown as ContextBridge).electronAPI.runPythonCode(file.path);
 
-  return Promise.resolve(analyze(file));
+  analyze(file).then(resp => {
+    console.log('***===***************************');
+    console.log(resp);
+    console.log('******************************');
+  });
+
+
+  // return Promise.resolve(analyze(file));
 }
 
 function extractFileText(file: File): string {
