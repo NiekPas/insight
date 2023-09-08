@@ -39,7 +39,3 @@ function handleFormSubmit(e: SubmitEvent): Promise<WordFrequencies> {
 
   // return Promise.resolve(analyze(file));
 }
-
-function extractFileText(file: File): string {
-  throw new Error("Function not implemented.");
-}
