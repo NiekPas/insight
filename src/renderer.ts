@@ -9,33 +9,67 @@ import WordFrequencies from "./types/WordFrequencies";
 
 interface ContextBridge {
   electronAPI: {
-    runPythonCode: (path: string) => Promise<WordFrequencies>;
+    runPythonCode: (path: string) => Promise<string[]>;
   };
 };
 
-document.getElementById("document-upload").addEventListener("submit", (e) => {
+document.getElementById("document-upload").addEventListener("submit", handleFormSubmit);
+
+function handleFormSubmit(e: SubmitEvent): void {
   e.preventDefault();
 
-  // TODO handle promise rejections (e.g. the user not having selected a file) by showing an error to the user
-  handleFormSubmit(e);
-});
-
-function handleFormSubmit(e: SubmitEvent): Promise<WordFrequencies> {
   const file = (document.getElementById('formFile') as HTMLInputElement).files[0];
 
   if (!file) {
-    return Promise.reject(new Error('Please select a file before submitting.'));
+    displayError(new Error('Please select a file before submitting.'));
   }
 
-  const analyze: (file: File) => Promise<WordFrequencies> =
-    (file) => (window as unknown as ContextBridge).electronAPI.runPythonCode(file.path);
+  wordFrequenciesFromFile(file)
+    .then(parsePythonResponse)
+    .then(displayData)
+    .catch(displayError);
+}
 
-  analyze(file).then(resp => {
-    console.log('***===***************************');
-    console.log(resp);
-    console.log('******************************');
-  });
+function wordFrequenciesFromFile(file: File): Promise<string[]> {
+  return (window as unknown as ContextBridge).electronAPI.runPythonCode(file.path);
+}
 
+function displayError(error: Error): void {
+  // TODO: prettier errors
+  alert(error);
+}
 
-  // return Promise.resolve(analyze(file));
+function displayData(wordFrequencies: WordFrequencies): void {
+  document.getElementById('data').innerHTML = wordFrequenciesTable(wordFrequencies);
+}
+
+function wordFrequenciesTable(wordFrequencies: WordFrequencies): string {
+  return `
+  <table class="table">
+    <thead>
+      <tr><th scope="col">Word</th><th scope="col">Frequency</th></tr>
+    </thead>
+    <tbody>
+      ${Object.entries(wordFrequencies).map(generateRow).join('')}
+    </tbody>
+  </table>
+  `;
+}
+
+function generateRow([word, frequency]: [string, number]): string {
+  return `<tr><td>${word}</td><td>${frequency}</td>`;
+}
+function parsePythonResponse(jsonStrings: string[]): WordFrequencies {
+  // We receive the response as an array of strings which together form a JSON string,
+  // so we need to concatenate the array and then parse it into a JSON object.
+  const jsonString = jsonStrings.join('');
+
+  // Parse the JSON string into an object
+  try {
+    const jsonObject: WordFrequencies = JSON.parse(jsonString);
+    console.log(jsonObject);
+    return jsonObject;
+  } catch (e) {
+    console.error("Couldn't parse JSON", e);
+  }
 }
