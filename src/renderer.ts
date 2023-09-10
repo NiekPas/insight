@@ -13,6 +13,8 @@ interface ContextBridge {
   };
 };
 
+type WordFrequency = [string, number];
+
 document.getElementById("document-upload").addEventListener("submit", handleFormSubmit);
 
 function handleFormSubmit(e: SubmitEvent): void {
@@ -26,6 +28,7 @@ function handleFormSubmit(e: SubmitEvent): void {
 
   wordFrequenciesFromFile(file)
     .then(parsePythonResponse)
+    .then(sortByFrequency)
     .then(displayData)
     .catch(displayError);
 }
@@ -39,18 +42,18 @@ function displayError(error: Error): void {
   alert(error);
 }
 
-function displayData(wordFrequencies: WordFrequencies): void {
+function displayData(wordFrequencies: WordFrequency[]): void {
   document.getElementById('data').innerHTML = wordFrequenciesTable(wordFrequencies);
 }
 
-function wordFrequenciesTable(wordFrequencies: WordFrequencies): string {
+function wordFrequenciesTable(wordFrequencies: WordFrequency[]): string {
   return `
   <table class="table">
     <thead>
       <tr><th scope="col">Word</th><th scope="col">Frequency</th></tr>
     </thead>
     <tbody>
-      ${Object.entries(wordFrequencies).map(generateRow).join('')}
+      ${wordFrequencies.map(generateRow).join('')}
     </tbody>
   </table>
   `;
@@ -67,9 +70,13 @@ function parsePythonResponse(jsonStrings: string[]): WordFrequencies {
   // Parse the JSON string into an object
   try {
     const jsonObject: WordFrequencies = JSON.parse(jsonString);
-    console.log(jsonObject);
     return jsonObject;
   } catch (e) {
     console.error("Couldn't parse JSON", e);
   }
+}
+
+function sortByFrequency(wordFrequencies: WordFrequencies): WordFrequency[] {
+  return Object.entries(wordFrequencies)
+    .sort(([_word1, frequency1], [_word2, frequency2]) => frequency2 - frequency1);
 }
