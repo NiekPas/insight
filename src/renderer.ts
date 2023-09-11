@@ -23,6 +23,13 @@ type WordFrequency = [string, number];
 
 document.getElementById("document-upload").addEventListener("submit", handleFormSubmit);
 
+// Enable form submit button after the user selects a file
+document.getElementById('formFile').addEventListener('change', function () {
+  const formSubmitButton = document.getElementById('formSubmit') as HTMLButtonElement;
+  formSubmitButton.disabled = (this as HTMLInputElement).files.length < 1;
+});
+
+
 function handleFormSubmit(e: SubmitEvent): void {
   e.preventDefault();
 
