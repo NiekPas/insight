@@ -5,8 +5,9 @@
   <meta charset="UTF-8" />
   <title>Hello World!</title>
   <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' data:" />
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' data:" />
+
   <link rel="stylesheet" href="dist/bootstrap.min.css">
 </head>
 
@@ -21,6 +22,19 @@
         <input class="form-control" type="file" id="formFile">
       </div>
 
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="errorToast" class="toast text-bg-warning" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body" id="error-toast-body">
+              &nbsp;
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+              aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TODO make this disabled until file has been selected -->
       <button type="submit" class="btn btn-primary">Submit</button>
 
       <div id="data"></div>
@@ -28,9 +42,10 @@
   </div>
 
   <!-- You can also require other files to run in this process -->
+  <script src="./dist/jquery-3.7.1.min.js"></script>
+  <script src="./dist/bootstrap.min.js"></script>
   <script src='set-exports.js'></script>
   <script src="./dist/renderer.js"></script>
-  <script src="./dist/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -7,6 +7,12 @@
 
 import WordFrequencies from "./types/WordFrequencies";
 
+declare var bootstrap: {
+  Toast: {
+    getOrCreateInstance: (e: HTMLElement) => { show: () => void; };
+  };
+};
+
 interface ContextBridge {
   electronAPI: {
     runPythonCode: (path: string) => Promise<string[]>;
@@ -39,8 +45,12 @@ function wordFrequenciesFromFile(file: File): Promise<string[]> {
 }
 
 function displayError(error: Error): void {
-  // TODO: prettier errors
-  alert(error);
+  const errorToast = document.getElementById('errorToast');
+  const errorToastBody = document.getElementById('error-toast-body');
+
+  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(errorToast);
+  errorToastBody.innerText = error.message;
+  toastBootstrap.show();
 }
 
 function displayData(wordFrequencies: WordFrequency[]): void {
