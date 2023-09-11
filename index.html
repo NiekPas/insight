@@ -18,8 +18,7 @@
     <form id="document-upload">
       <div class="mb-3">
         <label for="formFile" class="form-label">Upload documents</label>
-        <!-- TODO limit file extensions or types the user can choose from (e.g. no binary files, or only utf-8 encoded plain text files [for now]) -->
-        <input class="form-control" type="file" id="formFile">
+        <input class="form-control" type="file" id="formFile" accept="text/plain">
       </div>
 
       <div class="toast-container position-fixed bottom-0 end-0 p-3">
