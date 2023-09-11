@@ -24,6 +24,7 @@ function handleFormSubmit(e: SubmitEvent): void {
 
   if (!file) {
     displayError(new Error('Please select a file before submitting.'));
+    return;
   }
 
   wordFrequenciesFromFile(file)
