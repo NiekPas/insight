@@ -4,6 +4,7 @@ import json
 from typing import List
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+import unicodedata
 
 
 def word_frequencies(words: List[str]) -> str:
@@ -32,6 +33,15 @@ def remove_stopwords(text: str) -> List[str]:
     return [w for w in word_tokens if not w.lower() in stop_words]
 
 
+def remove_punctuation(words: List[str]) -> List[str]:
+    return [w for w in words if not only_punctuation(w)]
+
+
+# Returns true if all characters in the input string are punctuation characters
+def only_punctuation(string):
+    return all(unicodedata.category(char).startswith("P") for char in string)
+
+
 # For now, assume the file is a plain text file. Converting pdfs/word docs is a TODO.
 try:
     with open(document_path, "r") as file:
@@ -39,6 +49,8 @@ try:
 
         # TODO text preprocessing
         words = remove_stopwords(text)
+        words = remove_punctuation(words)
+
         json_data = word_frequencies(words)
 
         # Send back to TS
