@@ -13,6 +13,7 @@ def word_frequencies(words: List[str]) -> str:
     word_freq_dict = dict(word_freq)
     return json.dumps(word_freq_dict, indent=4)
 
+
 try:
     document_path = sys.argv[1]
 except IndexError:
@@ -33,7 +34,7 @@ def remove_stopwords(text: str) -> List[str]:
 
 # For now, assume the file is a plain text file. Converting pdfs/word docs is a TODO.
 try:
-    with open(document_path, 'r') as file:
+    with open(document_path, "r") as file:
         text = file.read()
 
         # TODO text preprocessing
