@@ -3,6 +3,7 @@ from collections import Counter
 import json
 from typing import List
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 import unicodedata
 
@@ -42,6 +43,11 @@ def only_punctuation(string):
     return all(unicodedata.category(char).startswith("P") for char in string)
 
 
+def lemmatize(words: List[str]) -> List[str]:
+    lemmatizer = WordNetLemmatizer()
+    return [lemmatizer.lemmatize(word, pos="v") for word in words]
+
+
 # For now, assume the file is a plain text file. Converting pdfs/word docs is a TODO.
 try:
     with open(document_path, "r") as file:
@@ -50,7 +56,8 @@ try:
         text = text.lower()
         words = remove_stopwords(text)
         words = remove_punctuation(words)
-        # TODO Stemming/Lemmatization: Reduce words to their root form.
+        words = lemmatize(words)
+
         # TODO Special Character Removal: Remove characters like &, %, $, etc.
         # TODO Number Removal: Optionally remove numerical values.
         # TODO Text Normalization: Convert all characters to a standard form, like ASCII.
