@@ -58,7 +58,6 @@ try:
         words = remove_punctuation(words)
         words = lemmatize(words)
 
-        # TODO Special Character Removal: Remove characters like &, %, $, etc.
         # TODO Number Removal: Optionally remove numerical values.
         # TODO Text Normalization: Convert all characters to a standard form, like ASCII.
         # TODO N-gram Extraction: Create n-word sequences.
