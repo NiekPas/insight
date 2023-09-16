@@ -47,7 +47,7 @@ try:
     with open(document_path, "r") as file:
         text = file.read()
 
-        # TODO Lowercasing: Convert all text to lowercase.
+        text = text.lower()
         words = remove_stopwords(text)
         words = remove_punctuation(words)
         # TODO Stemming/Lemmatization: Reduce words to their root form.
