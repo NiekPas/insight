@@ -47,9 +47,15 @@ try:
     with open(document_path, "r") as file:
         text = file.read()
 
-        # TODO text preprocessing
+        # TODO Lowercasing: Convert all text to lowercase.
         words = remove_stopwords(text)
         words = remove_punctuation(words)
+        # TODO Stemming/Lemmatization: Reduce words to their root form.
+        # TODO Special Character Removal: Remove characters like &, %, $, etc.
+        # TODO Number Removal: Optionally remove numerical values.
+        # TODO Text Normalization: Convert all characters to a standard form, like ASCII.
+        # TODO N-gram Extraction: Create n-word sequences.
+        # TODO TF-IDF Transformation: Represent text based on term frequency-inverse document frequency.
 
         json_data = word_frequencies(words)
 
