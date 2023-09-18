@@ -15,6 +15,7 @@
     "demo",
     "typescript"
   ],
+  "main": "dist/main.js",
   "license": "CC0-1.0",
   "devDependencies": {
     "@types/lodash.flow": "^3.5.7",
