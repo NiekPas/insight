@@ -15,7 +15,7 @@ declare var bootstrap: {
 
 interface ContextBridge {
   electronAPI: {
-    runPythonCode: (path: string) => Promise<string[]>;
+    analyzeFile: (path: string) => Promise<string[]>;
   };
 };
 
@@ -48,7 +48,7 @@ function handleFormSubmit(e: SubmitEvent): void {
 }
 
 function wordFrequenciesFromFile(file: File): Promise<string[]> {
-  return (window as unknown as ContextBridge).electronAPI.runPythonCode(file.path);
+  return (window as unknown as ContextBridge).electronAPI.analyzeFile(file.path);
 }
 
 function displayError(error: Error): void {

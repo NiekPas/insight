@@ -3,5 +3,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  runPythonCode: (path: string) => ipcRenderer.invoke('run-python-code', path)
+  analyzeFile: (path: string) => ipcRenderer.invoke('analyze-file', path)
 });
