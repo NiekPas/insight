@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import * as path from "path";
-import { handleRunPythonCode } from "./python-bridge";
+import { handleAnalyzeFile } from "./python-bridge";
 
 function createWindow() {
   // Create the browser window.
@@ -20,7 +20,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  ipcMain.handle('run-python-code', (e: IpcMainInvokeEvent, ...args: string[]) => handleRunPythonCode(args[0]));
+  ipcMain.handle('analyze-file', (e: IpcMainInvokeEvent, ...args: string[]) => handleAnalyzeFile(args[0]));
   createWindow();
 
   app.on("activate", function () {
