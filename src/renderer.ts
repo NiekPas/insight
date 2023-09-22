@@ -5,6 +5,7 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
+import TextProcessingOptions from "./types/TextProcessingOptions";
 import WordFrequencies from "./types/WordFrequencies";
 
 declare var bootstrap: {
@@ -15,7 +16,7 @@ declare var bootstrap: {
 
 interface ContextBridge {
   electronAPI: {
-    analyzeFile: (path: string) => Promise<string[]>;
+    analyzeFile: (path: string, options: TextProcessingOptions) => Promise<string[]>;
   };
 };
 
@@ -40,15 +41,18 @@ function handleFormSubmit(e: SubmitEvent): void {
     return;
   }
 
-  wordFrequenciesFromFile(file)
+  const removeStopwords = (document.getElementById('removeStopwords') as HTMLInputElement).checked;
+  const options: TextProcessingOptions = { removeStopwords };
+
+  wordFrequenciesFromFile(file, options)
     .then(parsePythonResponse)
     .then(sortByFrequency)
     .then(displayData)
     .catch(displayError);
 }
 
-function wordFrequenciesFromFile(file: File): Promise<string[]> {
-  return (window as unknown as ContextBridge).electronAPI.analyzeFile(file.path);
+function wordFrequenciesFromFile(file: File, options: TextProcessingOptions): Promise<string[]> {
+  return (window as unknown as ContextBridge).electronAPI.analyzeFile(file.path, options);
 }
 
 function displayError(error: Error): void {

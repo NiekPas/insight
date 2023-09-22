@@ -16,12 +16,12 @@ def word_frequencies(words: List[str]) -> str:
     return json.dumps(word_freq_dict, indent=4)
 
 
-def remove_stopwords(text: str) -> List[str]:
+def remove_stopwords(words: List[str]) -> List[str]:
     # Get English stopwords
     stop_words = set(stopwords.words("english"))
 
     # Remove stopwords
-    return [w for w in word_tokens if not w.lower() in stop_words]
+    return [w for w in words if not w.lower() in stop_words]
 
 
 def remove_punctuation(words: List[str]) -> List[str]:
@@ -51,7 +51,9 @@ try:
         text = text.lower()
 
         words = word_tokenize(text)
-        words = remove_stopwords(text)
+        if "--remove-stopwords" in sys.argv:
+            words = remove_stopwords(words)
+
         words = remove_punctuation(words)
         words = lemmatize(words)
 

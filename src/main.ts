@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import * as path from "path";
 import { handleAnalyzeFile } from "./python-bridge";
+import TextProcessingOptions from "./types/TextProcessingOptions";
 
 function createWindow() {
   // Create the browser window.
@@ -20,7 +21,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  ipcMain.handle('analyze-file', (e: IpcMainInvokeEvent, ...args: string[]) => handleAnalyzeFile(args[0]));
+  ipcMain.handle('analyze-file', (e: IpcMainInvokeEvent, path: string, options: TextProcessingOptions) => handleAnalyzeFile(path, options));
   createWindow();
 
   app.on("activate", function () {

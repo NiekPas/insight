@@ -1,14 +1,20 @@
 import * as path from "path";
-import { PythonShell } from "python-shell";
+import { Options, PythonShell } from "python-shell";
 import { app } from "electron";
+import TextProcessingOptions from "./types/TextProcessingOptions";
 
 const basePath = app.isPackaged ? process.resourcesPath : ".";
 const scriptPath = path.join(basePath, "script.py");
 
-async function handleAnalyzeFile(path: string): Promise<string[]> {
-  const options = { args: [path] };
+async function handleAnalyzeFile(path: string, textProcessingOptions: TextProcessingOptions): Promise<string[]> {
+  const args: string[] = [path, ...toArgStrings(textProcessingOptions)];
+  const options: Options = { args };
 
   return PythonShell.run(scriptPath, options);
 };
+
+function toArgStrings(textProcessingOptions: TextProcessingOptions): string[] {
+  return textProcessingOptions.removeStopwords ? ["--remove-stopwords"] : [];
+}
 
 export { handleAnalyzeFile };
