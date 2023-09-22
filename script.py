@@ -17,9 +17,6 @@ def word_frequencies(words: List[str]) -> str:
 
 
 def remove_stopwords(text: str) -> List[str]:
-    # Tokenize the text
-    word_tokens = word_tokenize(text)
-
     # Get English stopwords
     stop_words = set(stopwords.words("english"))
 
@@ -51,8 +48,9 @@ except IndexError:
 try:
     with open(document_path, "r") as file:
         text = file.read()
-
         text = text.lower()
+
+        words = word_tokenize(text)
         words = remove_stopwords(text)
         words = remove_punctuation(words)
         words = lemmatize(words)
