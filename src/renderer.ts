@@ -58,6 +58,8 @@ function displayError(error: Error): void {
   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(errorToast);
   errorToastBody.innerText = error.message;
   toastBootstrap.show();
+
+  console.error(error);
 }
 
 function displayData(wordFrequencies: WordFrequency[]): void {
