@@ -51,10 +51,13 @@ try:
         text = text.lower()
 
         words = word_tokenize(text)
+
         if "--remove-stopwords" in sys.argv:
             words = remove_stopwords(words)
 
-        words = remove_punctuation(words)
+        if "--remove-punctuation" in sys.argv:
+            words = remove_punctuation(words)
+
         words = lemmatize(words)
 
         # TODO Number Removal: Optionally remove numerical values.

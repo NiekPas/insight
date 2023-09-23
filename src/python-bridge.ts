@@ -14,7 +14,12 @@ async function handleAnalyzeFile(path: string, textProcessingOptions: TextProces
 };
 
 function toArgStrings(textProcessingOptions: TextProcessingOptions): string[] {
-  return textProcessingOptions.removeStopwords ? ["--remove-stopwords"] : [];
+  let args = [];
+
+  if (textProcessingOptions.removeStopwords) { args.push("--remove-stopwords"); };
+  if (textProcessingOptions.removePunctuation) { args.push("--remove-punctuation"); };
+
+  return args;
 }
 
 export { handleAnalyzeFile };

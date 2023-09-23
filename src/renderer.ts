@@ -42,7 +42,9 @@ function handleFormSubmit(e: SubmitEvent): void {
   }
 
   const removeStopwords = (document.getElementById('removeStopwords') as HTMLInputElement).checked;
-  const options: TextProcessingOptions = { removeStopwords };
+  const removePunctuation = (document.getElementById('removePunctuation') as HTMLInputElement).checked;
+
+  const options: TextProcessingOptions = { removeStopwords, removePunctuation };
 
   wordFrequenciesFromFile(file, options)
     .then(parsePythonResponse)
