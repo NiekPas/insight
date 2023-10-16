@@ -5,7 +5,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && NODE_ENV=development electron ./dist/main.js"
+    "start": "npm run build && NODE_ENV=development electron ./dist/main.js",
+    "release": "electron-packager . insight --platform=darwin --arch=x64 --out=/Users/niekvdpas/bin --overwrite --extra-resources=script.py"
   },
   "keywords": [
     "Electron",
