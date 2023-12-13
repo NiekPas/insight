@@ -3,4 +3,5 @@ dist
 .vscode/
 build/
 .DS_store
+pydist
 
