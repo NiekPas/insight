@@ -18,6 +18,10 @@ function toArgStrings(textProcessingOptions: TextProcessingOptions): string[] {
 
   if (textProcessingOptions.removeStopwords) { args.push("--remove-stopwords"); };
   if (textProcessingOptions.removePunctuation) { args.push("--remove-punctuation"); };
+  if (textProcessingOptions.topicModellingOptions.runTopicModelling) {
+    args.push("--topic-modeling");
+    args.push(`--num-topics=${textProcessingOptions.topicModellingOptions.numberOfTopics}`);
+  };
 
   return args;
 }

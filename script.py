@@ -1,4 +1,4 @@
-import os, sys
+import sys
 from collections import Counter
 import json
 from typing import List
@@ -6,14 +6,19 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 import unicodedata
+import numpy as np
+
+from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 
 
-def word_frequencies(words: List[str]) -> str:
+def word_frequencies(words: List[str]) -> dict[str, int]:
     word_freq = Counter(words)
 
     # Convert Counter to a dictionary for JSON
     word_freq_dict = dict(word_freq)
-    return json.dumps(word_freq_dict, indent=4)
+    return word_freq_dict
 
 
 def remove_stopwords(words: List[str]) -> List[str]:
@@ -36,6 +41,39 @@ def only_punctuation(string):
 def lemmatize(words: List[str]) -> List[str]:
     lemmatizer = WordNetLemmatizer()
     return [lemmatizer.lemmatize(word, pos="v") for word in words]
+
+
+def topic_modelling(words: List[str], num_topics: int) -> List:
+    tfidf_vectorizer = TfidfVectorizer(min_df=2)
+    tfidf_vectorizer.fit(words)
+    tfidf_matrix = tfidf_vectorizer.transform(words)
+    tfidf_matrix.shape
+
+    LDA = LatentDirichletAllocation(
+        n_components=num_topics, random_state=321, evaluate_every=10
+    )
+    LDA.fit(tfidf_matrix)
+    feature_names = np.array(tfidf_vectorizer.get_feature_names_out())
+    topics = []
+
+    for topic in LDA.components_:
+        top_word_indices = topic.argsort()[-5:][::-1]
+        top_words = feature_names[top_word_indices]
+        topics.append(", ".join(top_words))
+
+    # for i, topic in enumerate(topics):
+    #     print("topic #" + str(i))
+    #     print(topic)
+    return topics
+
+
+def get_num_topics(args) -> int | None:
+    for arg in args:
+        if arg.startswith("--num-topics"):
+            try:
+                return int(arg.split("=")[1])
+            except ValueError:
+                return None
 
 
 try:
@@ -63,12 +101,19 @@ try:
         # TODO Number Removal: Optionally remove numerical values.
         # TODO Text Normalization: Convert all characters to a standard form, like ASCII.
         # TODO N-gram Extraction: Create n-word sequences.
-        # TODO TF-IDF Transformation: Represent text based on term frequency-inverse document frequency.
 
-        json_data = word_frequencies(words)
+        topics = []
+        if "--topic-modelling" in sys.argv:
+            num_topics = get_num_topics(sys.argv) or 20
+            topics = topic_modelling(words, num_topics)
 
-        # Send back to TS
-        print(json_data)
+        word_frequency_data = word_frequencies(words)
+
+        combined_dicts = {"topics": topics, "wordFrequencies": word_frequency_data}
+        json_dicts = json.dumps(combined_dicts, indent=2)
+
+        # Send back to Electron process
+        print(combined_dicts)
 
 except FileNotFoundError:
     print("The file was not found.")

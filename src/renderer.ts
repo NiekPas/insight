@@ -5,7 +5,7 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
-import TextProcessingOptions from "./types/TextProcessingOptions";
+import TextProcessingOptions, { TopicModellingOptions } from "./types/TextProcessingOptions";
 import WordFrequencies from "./types/WordFrequencies";
 
 declare var bootstrap: {
@@ -24,12 +24,16 @@ type WordFrequency = [string, number];
 
 document.getElementById("document-upload").addEventListener("submit", handleFormSubmit);
 
-// Enable form submit button after the user selects a file
+// Enable form submit button after the user selects a file.
 document.getElementById('formFile').addEventListener('change', function () {
   const formSubmitButton = document.getElementById('formSubmit') as HTMLButtonElement;
   formSubmitButton.disabled = (this as HTMLInputElement).files.length < 1;
 });
 
+// We need to use the 'input' event, since the 'change' handler only fires when the mouse is released.
+document.getElementById('numberOfTopics').addEventListener('input', updateNumberOfTopicsLabel);
+// Do this on page load to display the default number of topics right away
+updateNumberOfTopicsLabel();
 
 function handleFormSubmit(e: SubmitEvent): void {
   e.preventDefault();
@@ -43,17 +47,26 @@ function handleFormSubmit(e: SubmitEvent): void {
 
   const removeStopwords = (document.getElementById('removeStopwords') as HTMLInputElement).checked;
   const removePunctuation = (document.getElementById('removePunctuation') as HTMLInputElement).checked;
+  const topicModellingOptions: TopicModellingOptions = {
+    runTopicModelling: (document.getElementById('runTopicModelling') as HTMLInputElement).checked,
+    numberOfTopics: (document.getElementById('numberOfTopics') as HTMLInputElement).valueAsNumber
+  };
 
-  const options: TextProcessingOptions = { removeStopwords, removePunctuation };
+  // Enforce at least 5 topics if topic modelling is checked
+  if (topicModellingOptions.runTopicModelling && topicModellingOptions.numberOfTopics < 5) {
+    return displayError(new Error("Topic modelling requires at least 5 topics."));
+  }
 
-  wordFrequenciesFromFile(file, options)
+  const options: TextProcessingOptions = { removeStopwords, removePunctuation, topicModellingOptions };
+
+  runAnalysis(file, options)
     .then(parsePythonResponse)
     .then(sortByFrequency)
     .then(displayData)
     .catch(displayError);
 }
 
-function wordFrequenciesFromFile(file: File, options: TextProcessingOptions): Promise<string[]> {
+function runAnalysis(file: File, options: TextProcessingOptions): Promise<string[]> {
   return (window as unknown as ContextBridge).electronAPI.analyzeFile(file.path, options);
 }
 
@@ -95,7 +108,9 @@ function parsePythonResponse(jsonStrings: string[]): WordFrequencies {
 
   // Parse the JSON string into an object
   try {
+    debugger;
     const jsonObject: WordFrequencies = JSON.parse(jsonString);
+    debugger;
     return jsonObject;
   } catch (e) {
     console.error("Couldn't parse JSON", e);
@@ -105,4 +120,9 @@ function parsePythonResponse(jsonStrings: string[]): WordFrequencies {
 function sortByFrequency(wordFrequencies: WordFrequencies): WordFrequency[] {
   return Object.entries(wordFrequencies)
     .sort(([_word1, frequency1], [_word2, frequency2]) => frequency2 - frequency1);
+}
+
+function updateNumberOfTopicsLabel() {
+  const numberOfTopics = (document.getElementById('numberOfTopics') as HTMLInputElement).value;
+  document.getElementById('numberOfTopicsLabel').innerHTML = `Number of topics: ${numberOfTopics}`;
 }
